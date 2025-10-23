@@ -6,6 +6,69 @@ export default function Home() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [bg, setBg] = useState("/images/bgsunny.png");
+  const [time, setTime] = useState(new Date());
+
+  const getWeatherIcon = (main) => {
+    switch (main) {
+      case "Clear":
+        return "/images/sunny.png";
+      case "Clouds":
+        return "/images/cloudy.png";
+      case "Rain":
+        return "/images/rain.png";
+      case "Drizzle":
+        return "/images/drizzle.png";
+      case "Thunderstorm":
+        return "/images/thunderstorm.png";
+      case "Snow":
+        return "/images/snow.png";
+      case "Mist":
+      case "Fog":
+      case "Haze":
+        return "/images/atmosphere.png";
+      default:
+        return "";
+    }
+  };
+
+  const getWeatherBackground = (main) => {
+    switch (main) {
+      case "Clear":
+        return "/images/bgsunny.png";
+      case "Clouds":
+        return "/images/bgcloudy.png";
+      case "Rain":
+        return "/images/bgrain.png";
+      case "Drizzle":
+        return "/images/bgdrizzle.png";
+      case "Thunderstorm":
+        return "/images/bgthunderstorm.png";
+      case "Snow":
+        return "/images/bgsnow.png";
+      case "Mist":
+      case "Fog":
+      case "Haze":
+        return "/images/bgcloudy.png";
+      default:
+        return "/images/bgsunny.png";
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval); // cleanup saat component unmount
+  }, []);
+
+
+  useEffect(() => {
+    if (weather?.weather?.[0]?.main) {
+      setBg(getWeatherBackground(weather.weather[0].main));
+    }
+  }, [weather]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -79,38 +142,26 @@ export default function Home() {
     }
   };
 
-  const getWeatherIcon = (main) => {
-    switch (main) {
-      case "Clear":
-        return "/images/sunny.png";
-      case "Clouds":
-        return "/images/cloudy.png";
-      case "Rain":
-        return "/images/rain.png";
-      case "Drizzle":
-        return "/images/drizzle.png";
-      case "Thunderstorm":
-        return "/images/thunderstorm.png";
-      case "Snow":
-        return "/images/snow.png";
-      case "Mist":
-      case "Fog":
-      case "Haze":
-        return "/images/atmosphere.png";
-      default:
-        return "";
-    }
+  const formatTime = (date) => {
+    const h = String(date.getHours()).padStart(2, "0");
+    const m = String(date.getMinutes()).padStart(2, "0");
+    const s = String(date.getSeconds()).padStart(2, "0");
+    return `${h}:${m}:${s}`;
   };
 
   return (
-    <>
+    <div className="relative w-screen min-h-screen bg-cover bg-center transition-all duration-700" style={{ backgroundImage: `url("/images/bgsunny.png")` }}>
+
       <div className="w-screen min-h-screen flex justify-center items-center">
-        <div className="bg-sky-50 flex flex-col p-7 rounded-xl lg:flex-row">
+        <div className="bg-sky-50/60 flex flex-col p-7 rounded-xl lg:flex-row ">
             
           <section className="flex flex-col">
-            <p className="font-bold text-4xl">Skycast</p>
+            <div className="flex justify-between">
+              <p className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-green-300 to-white animate-shimmer">Skycast</p>
+              <p className="font-normal text-4xl text-slate-500 bg-white rounded-xl px-2 py-1">{formatTime(time)}</p>
+            </div>
             <form className="mb-3" action="" onSubmit={fetchWeather}>
-              <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter city name..." type="text" className="w-full px-3 py-2 mt-5 bg-slate-200 text-gray-500 rounded-xl" />
+              <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter city name..." type="text" className="w-full px-3 py-2 mt-5 bg-white text-gray-500 rounded-xl" />
             </form>
             <hr className="text-slate-300" />
 
@@ -122,11 +173,12 @@ export default function Home() {
             
             {!loading && weather && weather.main && (
             <div>
-              <p className="mt-6 font-semibold text-3xl text-center">{weather.name}, {weather.sys.country}</p>
+              <p className="mt-6 py-2 font-semibold text-3xl text-center bg-white rounded-xl">{weather.name}, {weather.sys.country}</p>
               <div className="mt-2 flex flex-col sm:flex-row gap-4">
 
-                <div className="flex flex-col justify-between">
-                  <div className="flex justify-center gap-5 mt-4 items-center">
+                <div className="bg-white flex flex-col justify-between rounded-xl p-3 mt-6">
+
+                  <div className="flex justify-center gap-5 items-center rounded-xl">
                     <Image src={getWeatherIcon(weather.weather[0].main)}  width={110} height={110} alt={weather.weather[0].main} />
                     <div className="flex flex-col">
                       <p className="text-5xl font-semibold">{weather.main.temp}°C</p>
@@ -134,7 +186,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="bg-slate-200 grid grid-cols-2 justify-between mt-6 p-4 rounded-xl gap-10">
+                  <div className="grid grid-cols-2 justify-between mt-6 p-4 rounded-xl gap-10">
                     <div className="flex gap-3">
                       <Image src="/images/humidity.png" width={50} height={40} alt="sunny" />
                       <div className="flex flex-col">
@@ -153,7 +205,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <div className="bg-slate-200 flex flex-col justify-between mt-6 p-4 rounded-xl gap-7">
+                  <div className="bg-white flex flex-col justify-between mt-6 p-4 rounded-xl gap-7">
 
                     <div className="grid grid-cols-2 gap-1">
                       <div className="flex gap-3">
@@ -215,6 +267,6 @@ export default function Home() {
           </section> 
         </div>
       </div>
-    </>
+    </div>
   );
 }
