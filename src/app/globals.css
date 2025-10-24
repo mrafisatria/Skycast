@@ -13,3 +13,16 @@ body {
   background-size: 200% auto;
   animation: shimmer 5s linear infinite;
 }
+
+@keyframes rainbow-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.rainbow-shimmer {
+  background: linear-gradient(270deg,red, orange, yellow, green, blue, indigo, violet, red);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-shimmer 7s linear infinite;
+}

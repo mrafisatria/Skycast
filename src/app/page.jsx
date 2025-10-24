@@ -264,8 +264,13 @@ export default function Home() {
             </div>
             )}
             
-          </section> 
+          </section>  
         </div>
+      </div>
+      <div className="absolute bottom-4 w-full flex justify-center">
+        <p className="text-white text-sm opacity-90">
+          &copy; 2025 Skycast by <a href="https://mrafisatria.vercel.app" target="blank" className="rainbow-shimmer">Muhammad Rafi Satria</a>. All rights reserved.
+        </p>
       </div>
     </div>
   );
