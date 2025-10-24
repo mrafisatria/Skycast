@@ -14,6 +14,10 @@ const inter = Inter({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <title>Skycast – Weather Now</title>
+         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+      </head>
       <body className={`${inter.variable} antialiased bg-sky-200`}>
         {children}
       </body>
